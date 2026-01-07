@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pocketpipo_db
+    username: pipo_user
+    password: nambiap1p02dge12k
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+app:
+  jwt:
+    secret: "D4WGECE3FH2FGDRFH4DD4GD2DFEG2D2D"
+    expiration-ms: 3600000 # 1 hour

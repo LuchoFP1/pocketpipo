@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pocketpipo_postgres
+    environment:
+      POSTGRES_DB: pocketpipo_db
+      POSTGRES_USER: pipo_user
+      POSTGRES_PASSWORD: nambiap1p02dge12k
+    ports:
+      - "5432:5432"
+    volumes:
+      - pocketpipo_pgdata:/var/lib/postgresql/data
+
+volumes:
+  pocketpipo_pgdata:
