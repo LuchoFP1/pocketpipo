@@ -1,11 +1,13 @@
 package com.pocketpipo.pocketpipo.service;
 
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pocketpipo.pocketpipo.dto.CreateUserRequestDTO;
 import com.pocketpipo.pocketpipo.entity.User;
 import com.pocketpipo.pocketpipo.exception.DuplicatedEmailException;
+import com.pocketpipo.pocketpipo.exception.UserNotFoundException;
 import com.pocketpipo.pocketpipo.repository.UserRepository;
 
 @Service
@@ -28,5 +30,17 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public User getUserByEmail(String email) {
+    if (!this.validateString(email)) {
+        throw new IllegalArgumentException("Invalid email");
+    }
 
+    return this.userRepository.findByEmailAndDeletedFalse(email)
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    // Helpers
+    public Boolean validateString(String stringValue) {
+        return ((stringValue != null) && (!stringValue.isBlank())); 
+     }
 }

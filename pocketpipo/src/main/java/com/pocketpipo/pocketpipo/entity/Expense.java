@@ -78,5 +78,13 @@ public class Expense {
         this.deleted = deleted;
     }
 
+    public Expense(String description, BigDecimal amount, LocalDate date, User user) {
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.user = user;
+    }
+
     // getters / setters
+    
 }

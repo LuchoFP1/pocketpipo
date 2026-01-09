@@ -20,6 +20,20 @@ public class GlobalExceptionHandler {
     ) {
         ApiErrorDTO body = new ApiErrorDTO(
                 ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                req.getRequestURI(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorDTO> handleNotFound(
+            UserNotFoundException ex,
+            HttpServletRequest req
+    ) {
+        ApiErrorDTO body = new ApiErrorDTO(
+                ex.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
                 req.getRequestURI(),
                 Instant.now()
