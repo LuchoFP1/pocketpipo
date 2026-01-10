@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pocketpipo.pocketpipo.dto.CreateExpenseDTO;
+import com.pocketpipo.pocketpipo.dto.CreateExpenseRequestDTO;
 import com.pocketpipo.pocketpipo.service.ExpenseService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ public class ExpenseController {
     }
 
     @PostMapping("/expenses")
-    public ResponseEntity<Void> createExpense(@RequestBody CreateExpenseDTO createExpenseDTO) {
+    public ResponseEntity<Void> createExpense(@RequestBody CreateExpenseRequestDTO createExpenseDTO) {
         this.taskService.createExpense(createExpenseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
