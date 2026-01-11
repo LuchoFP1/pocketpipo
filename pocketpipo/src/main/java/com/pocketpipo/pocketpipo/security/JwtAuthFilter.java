@@ -40,14 +40,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (!jwtService.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        try {
+    if (!jwtService.isTokenValid(token)) {
+        filterChain.doFilter(request, response);
+        return;
+    }
+} catch (Exception ex) {
+    filterChain.doFilter(request, response);
+    return;
+}
 
         String email = jwtService.extractSubject(token);
 
-        // Evita re-setear auth si ya existe
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 

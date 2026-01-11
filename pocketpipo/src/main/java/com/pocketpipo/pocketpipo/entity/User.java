@@ -90,5 +90,6 @@ public class User {
     }
 
     // getters / setters
-    
+    protected User() {
+}
 }

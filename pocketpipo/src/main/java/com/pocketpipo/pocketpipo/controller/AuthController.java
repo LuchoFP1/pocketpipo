@@ -29,12 +29,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginRequestDTO dto) {
+public LoginResponseDTO login(@RequestBody LoginRequestDTO dto) {
+    try {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
+    } catch (org.springframework.security.core.AuthenticationException ex) {
+        throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.UNAUTHORIZED,
+                ex.getClass().getSimpleName() + ": " + ex.getMessage()
+        );
+    }
 
-        String token = jwtService.generateToken(dto.getEmail());
-        return new LoginResponseDTO(token);
+    String token = jwtService.generateToken(dto.getEmail());
+    return new LoginResponseDTO(token);
     }
 }

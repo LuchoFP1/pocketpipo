@@ -1,6 +1,7 @@
 package com.pocketpipo.pocketpipo.service;
 
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +43,10 @@ public class UserService {
     // Helpers
     public Boolean validateString(String stringValue) {
         return ((stringValue != null) && (!stringValue.isBlank())); 
+     }
+
+     public User getCurrentLoggedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return this.getUserByEmail(email);
      }
 }

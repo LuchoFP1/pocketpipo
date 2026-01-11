@@ -70,7 +70,7 @@ public class Expense {
         this.user = user;
     }
 
-    public boolean isDeleted() {
+    public boolean getDeleted() {
         return deleted;
     }
 

@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/pocketpipo_db
@@ -13,6 +12,9 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+  web:
+    error:
+      include-message: always,
 
 logging:
   level:
