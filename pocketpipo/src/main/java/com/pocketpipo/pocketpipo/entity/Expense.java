@@ -30,6 +30,20 @@ public class Expense {
     @Column(nullable = false)
     private boolean deleted = false;
 
+       public Expense(String description, BigDecimal amount, LocalDate date, User user) {
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.user = user;
+    }
+
+    
+
+    public Expense() {
+    }
+
+
+
     public Long getId() {
         return id;
     }
@@ -78,12 +92,7 @@ public class Expense {
         this.deleted = deleted;
     }
 
-    public Expense(String description, BigDecimal amount, LocalDate date, User user) {
-        this.description = description;
-        this.amount = amount;
-        this.date = date;
-        this.user = user;
-    }
+ 
 
     // getters / setters
     
