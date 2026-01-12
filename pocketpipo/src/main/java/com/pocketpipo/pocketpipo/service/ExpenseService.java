@@ -9,6 +9,7 @@ import com.pocketpipo.pocketpipo.dto.CreateExpenseRequestDTO;
 import com.pocketpipo.pocketpipo.dto.ExpenseResponseDTO;
 import com.pocketpipo.pocketpipo.entity.Expense;
 import com.pocketpipo.pocketpipo.entity.User;
+import com.pocketpipo.pocketpipo.exception.ExpenseNotFoundException;
 import com.pocketpipo.pocketpipo.repository.ExpenseRepository;
 
 
@@ -35,10 +36,23 @@ public class ExpenseService {
         this.expenseRepository.save(expense);
     }
 
-    public List<Expense> getCurrentUserExpensesList() {
+    public List<Expense> getAllCurrentUserExpensesList() {
         User user = this.userService.getCurrentLoggedUser();
         return this.expenseRepository.findAllByUserIdAndDeletedFalse(user.getId());
     }
+
+    @Transactional
+    public void deleteExpenseById(Long expenseId) {
+        User user = this.userService.getCurrentLoggedUser();
+        Expense expense = this.expenseRepository.findByIdAndUserIdAndDeletedFalse(expenseId, user.getId());
+        if (expense == null) {
+            throw new ExpenseNotFoundException("The expense you are trying to delete does not exist");
+        }
+        expense.setDeleted(true);
+        this.expenseRepository.save(expense);
+    }
+
+
 
     // Helpers
 

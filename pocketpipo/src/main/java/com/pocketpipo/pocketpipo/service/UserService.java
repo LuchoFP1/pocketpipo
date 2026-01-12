@@ -4,12 +4,14 @@ package com.pocketpipo.pocketpipo.service;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pocketpipo.pocketpipo.dto.CreateUserRequestDTO;
 import com.pocketpipo.pocketpipo.entity.User;
 import com.pocketpipo.pocketpipo.exception.DuplicatedEmailException;
 import com.pocketpipo.pocketpipo.exception.UserNotFoundException;
 import com.pocketpipo.pocketpipo.repository.UserRepository;
+
 
 @Service
 public class UserService {
@@ -40,6 +42,15 @@ public class UserService {
             .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
+     @Transactional
+     public void deleteCurrentLoggedUser() {
+        User user = this.getCurrentLoggedUser();
+        user.setDeleted(true);
+        this.userRepository.save(user);
+     }
+
+
+
     // Helpers
     public Boolean validateString(String stringValue) {
         return ((stringValue != null) && (!stringValue.isBlank())); 
@@ -47,6 +58,10 @@ public class UserService {
 
      public User getCurrentLoggedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return this.getUserByEmail(email);
+        User user = this.getUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("Error getting current user");
+        }
+        return user;
      }
 }

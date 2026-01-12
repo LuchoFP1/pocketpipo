@@ -41,6 +41,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ExpenseNotFoundException.class)
+public ResponseEntity<ApiErrorDTO> handleNotFound(
+        ExpenseNotFoundException ex,
+        HttpServletRequest req
+) {
+    ApiErrorDTO body = new ApiErrorDTO(
+            ex.getMessage(),
+            HttpStatus.NOT_FOUND.value(),
+            req.getRequestURI(),
+            Instant.now()
+    );
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+}
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiErrorDTO> handleNotFound(
             UserNotFoundException ex,

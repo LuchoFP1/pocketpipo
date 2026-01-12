@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     public List<Expense> findAllByUserIdAndDeletedFalse(Long userId);
+    public Expense findByIdAndUserIdAndDeletedFalse(Long expenseId, Long userId);
 }

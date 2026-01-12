@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,12 +38,20 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public ResponseEntity<List<ExpenseResponseDTO>> getExpenses() {
         List<ExpenseResponseDTO> expenses =
-            expenseService.getCurrentUserExpensesList()
+            expenseService.getAllCurrentUserExpensesList()
                     .stream()
                     .map(expenseService::toExpenseResponseDTO)
                     .toList();
 
         return ResponseEntity.ok(expenses);
         }
-   
+
+
+   @DeleteMapping("/{expenseId}") 
+    public ResponseEntity<String> deleteExpense(@PathVariable Long expenseId) {
+        this.expenseService.deleteExpenseById(expenseId);
+        return ResponseEntity.ok("The expense was succesfully deleted.");
+
+    }
+
 }

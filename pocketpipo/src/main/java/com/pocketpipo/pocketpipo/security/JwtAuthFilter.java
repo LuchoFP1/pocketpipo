@@ -40,33 +40,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        try {
-    if (!jwtService.isTokenValid(token)) {
-        filterChain.doFilter(request, response);
-        return;
-    }
-} catch (Exception ex) {
-    filterChain.doFilter(request, response);
-    return;
-}
+try {
+    String email = jwtService.extractSubject(token);
 
-        String email = jwtService.extractSubject(token);
+    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (!jwtService.isTokenValid(token, userDetails)) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+} catch (Exception ex) {
+    // no autenticar; el SecurityChain devolverá 401 si el endpoint es protegido
+}
+
+filterChain.doFilter(request, response);
     }
 }
