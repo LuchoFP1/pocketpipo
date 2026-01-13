@@ -16,6 +16,9 @@ import com.pocketpipo.pocketpipo.dto.ExpenseResponseDTO;
 import com.pocketpipo.pocketpipo.service.ExpenseService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -29,16 +32,24 @@ public class ExpenseController {
     }
 
     @PostMapping("/expenses")
-    public ResponseEntity<Void> createExpense(@RequestBody CreateExpenseRequestDTO createExpenseDTO) {
-        this.expenseService.createExpense(createExpenseDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+public ResponseEntity<Void> createExpense(
+        @RequestBody CreateExpenseRequestDTO createExpenseDTO,
+        @RequestHeader("Idempotency-Key") String idempotencyKey,
+        @RequestParam(required = false) Integer year,
+        @RequestParam(required = false) Integer month
+) {
+    this.expenseService.createExpense(createExpenseDTO, idempotencyKey);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+}
 
     
     @GetMapping("/expenses")
-    public ResponseEntity<List<ExpenseResponseDTO>> getExpenses() {
+    public ResponseEntity<List<ExpenseResponseDTO>> getExpenses(
+        @RequestParam(required = false) Integer year,
+        @RequestParam(required = false) Integer month
+    ) {
         List<ExpenseResponseDTO> expenses =
-            expenseService.getAllCurrentUserExpensesList()
+            expenseService.getCurrentUserExpensesList(year, month)
                     .stream()
                     .map(expenseService::toExpenseResponseDTO)
                     .toList();
@@ -53,5 +64,6 @@ public class ExpenseController {
         return ResponseEntity.ok("The expense was succesfully deleted.");
 
     }
+    
 
 }
