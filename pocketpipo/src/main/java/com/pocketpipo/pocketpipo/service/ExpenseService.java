@@ -1,5 +1,6 @@
 package com.pocketpipo.pocketpipo.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -74,9 +75,16 @@ public class ExpenseService {
     public List<Expense> getCurrentUserExpensesList(Integer year, Integer month) {
         User user = this.userService.getCurrentLoggedUser();
         if ((year == null) && (month == null)) {
-            return this.expenseRepository.findAllByUserIdAndDeletedFalse    (user.getId());
+            return this.expenseRepository.findAllByUserIdAndDeletedFalse(user.getId());
         } else {
-            return null; // Aca va a ir la logica para setear el otro filtro
+            LocalDate startDate = LocalDate.of(year, 1, 1);
+            LocalDate endDate = startDate.plusYears(1);;
+            if ( month != null ) {
+                startDate = LocalDate.of(year, month, 1);
+                endDate = startDate.plusMonths(1);
+            }
+            return this.expenseRepository.findAllByUserIdAndDeletedFalseAndDateGreaterThanEqualAndDateLessThan(user.getId(), startDate, endDate);
+
         }
     }
 
