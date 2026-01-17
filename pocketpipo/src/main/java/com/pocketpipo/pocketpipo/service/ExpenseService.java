@@ -90,9 +90,6 @@ public class ExpenseService {
         }
     }
 
-
-
-
     @Transactional
     public void deleteExpenseById(Long expenseId) {
         User user = this.userService.getCurrentLoggedUser();
@@ -105,6 +102,18 @@ public class ExpenseService {
     }
 
 
+    public Expense getExpenseById(Long expenseId) {
+        if (expenseId == null) {
+            throw new RuntimeException("Error: Id is null");
+        }
+        User user = this.userService.getCurrentLoggedUser();
+        Expense expense = this.expenseRepository.findByIdAndUserIdAndDeletedFalse(expenseId, user.getId());
+        if (expense == null) {
+            throw new ExpenseNotFoundException("Error: there is no active expense with id " + expenseId);
+        } else {
+            return expense;
+        }
+    }
 
     // Helpers
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,6 +64,12 @@ public ResponseEntity<Void> createExpense(
         this.expenseService.deleteExpenseById(expenseId);
         return ResponseEntity.ok("The expense was succesfully deleted.");
 
+    }
+
+    @GetMapping("/{expenseId}")
+    public ResponseEntity<ExpenseResponseDTO> getExpenseById(@PathVariable Long expenseId) {
+        ExpenseResponseDTO responesDTO = this.expenseService.toExpenseResponseDTO(this.expenseService.getExpenseById(expenseId));
+        return ResponseEntity.ok(responesDTO);
     }
     
 
