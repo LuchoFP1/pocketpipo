@@ -73,7 +73,8 @@ public class ExpenseService {
     }
 
 
-    public List<Expense> getCurrentUserExpensesList(Integer year, Integer month) {
+    public List<Expense> getCurrentUserExpensesList(Integer month, Integer year) {
+        this.validateMonthAndYear(month, year);
         User user = this.userService.getCurrentLoggedUser();
         if ((year == null) && (month == null)) {
             return this.expenseRepository.findAllByUserIdAndDeletedFalse(user.getId());
@@ -118,13 +119,15 @@ public class ExpenseService {
     }
 
     public void validateMonthAndYear(Integer month, Integer year) {
-        if (year == null ) {
+        if ((year == null) && (month != null) ) {
             throw new InvalidDateException("Error: The year value can't be null");
          }
             else {
+                if ( year != null) {      
             if ((year > 2100) || (year < 2000)) {
                 throw new InvalidDateException("Error: Incorrect year value");
             }
+                }
          }
         if (month != null) {
             if ((month > 12) || (month < 1)) {
@@ -133,5 +136,5 @@ public class ExpenseService {
         }
     }
 
-    
+
 }

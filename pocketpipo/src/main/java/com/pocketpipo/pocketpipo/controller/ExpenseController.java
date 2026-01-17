@@ -49,7 +49,7 @@ public ResponseEntity<Void> createExpense(
         @RequestParam(required = false) Integer month
     ) {
         List<ExpenseResponseDTO> expenses =
-            expenseService.getCurrentUserExpensesList(year, month)
+            expenseService.getCurrentUserExpensesList(month, year)
                     .stream()
                     .map(expenseService::toExpenseResponseDTO)
                     .toList();
