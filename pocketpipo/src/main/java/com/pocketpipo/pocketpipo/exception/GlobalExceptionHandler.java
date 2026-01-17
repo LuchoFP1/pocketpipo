@@ -68,4 +68,18 @@ public ResponseEntity<ApiErrorDTO> handleNotFound(
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
+
+    @ExceptionHandler(InvalidDateException.class)
+public ResponseEntity<ApiErrorDTO> handleInvalidDate(
+        InvalidDateException ex,
+        HttpServletRequest req
+) {
+    ApiErrorDTO body = new ApiErrorDTO(
+            ex.getMessage(),
+            HttpStatus.BAD_REQUEST.value(),
+            req.getRequestURI(),
+            Instant.now()
+    );
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+}
 }

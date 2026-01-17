@@ -12,6 +12,7 @@ import com.pocketpipo.pocketpipo.entity.Expense;
 import com.pocketpipo.pocketpipo.entity.IdempotencyKey;
 import com.pocketpipo.pocketpipo.entity.User;
 import com.pocketpipo.pocketpipo.exception.ExpenseNotFoundException;
+import com.pocketpipo.pocketpipo.exception.InvalidDateException;
 import com.pocketpipo.pocketpipo.repository.ExpenseRepository;
 import com.pocketpipo.pocketpipo.repository.IdempotencyKeyRepository;
 
@@ -115,4 +116,22 @@ public class ExpenseService {
                 expense.getDeleted()
         );
     }
+
+    public void validateMonthAndYear(Integer month, Integer year) {
+        if (year == null ) {
+            throw new InvalidDateException("Error: The year value can't be null");
+         }
+            else {
+            if ((year > 2100) || (year < 2000)) {
+                throw new InvalidDateException("Error: Incorrect year value");
+            }
+         }
+        if (month != null) {
+            if ((month > 12) || (month < 1)) {
+                throw new InvalidDateException("Error: Incorrect month value");
+            }
+        }
+    }
+
+    
 }
