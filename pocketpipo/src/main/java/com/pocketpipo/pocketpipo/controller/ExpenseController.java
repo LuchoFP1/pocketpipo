@@ -72,5 +72,9 @@ public ResponseEntity<Void> createExpense(
         return ResponseEntity.ok(responesDTO);
     }
     
-
+    @PatchMapping("/{expenseId}")
+    public void updateExpense(@PathVariable Long expenseId,
+                             @RequestBody CreateExpenseRequestDTO expenseDataDTO) {
+            this.expenseService.updateExpense(expenseId, expenseDataDTO);
+    }
 }

@@ -92,11 +92,7 @@ public class ExpenseService {
 
     @Transactional
     public void deleteExpenseById(Long expenseId) {
-        User user = this.userService.getCurrentLoggedUser();
-        Expense expense = this.expenseRepository.findByIdAndUserIdAndDeletedFalse(expenseId, user.getId());
-        if (expense == null) {
-            throw new ExpenseNotFoundException("The expense you are trying to delete does not exist");
-        }
+        Expense expense = this.getExpenseByIdForCurrentUser(expenseId);
         expense.setDeleted(true);
         this.expenseRepository.save(expense);
     }
@@ -106,16 +102,27 @@ public class ExpenseService {
         if (expenseId == null) {
             throw new RuntimeException("Error: Id is null");
         }
-        User user = this.userService.getCurrentLoggedUser();
-        Expense expense = this.expenseRepository.findByIdAndUserIdAndDeletedFalse(expenseId, user.getId());
-        if (expense == null) {
-            throw new ExpenseNotFoundException("Error: there is no active expense with id " + expenseId);
-        } else {
-            return expense;
-        }
+        return this.getExpenseByIdForCurrentUser(expenseId);
+    }
+
+    public void updateExpense(Long expenseId, CreateExpenseRequestDTO expenseRequestDTO) {
+        Expense expense = this.getExpenseByIdForCurrentUser(expenseId);
+        expense.setAmount(expenseRequestDTO.getAmount());
+        expense.setDate(expenseRequestDTO.getDate());
+        expense.setDescription(expenseRequestDTO.getDescription());
+        this.expenseRepository.save(expense);
     }
 
     // Helpers
+
+    private Expense getExpenseByIdForCurrentUser(Long expenseId) {
+        User user = this.userService.getCurrentLoggedUser();
+        Expense expense = this.expenseRepository.findByIdAndUserIdAndDeletedFalse(expenseId, user.getId());
+        if (expense == null) {
+            throw new ExpenseNotFoundException("The requested expense does not exists");
+        }
+        return expense;
+    }
 
     public ExpenseResponseDTO toExpenseResponseDTO(Expense expense) {
         return new ExpenseResponseDTO(
