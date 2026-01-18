@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.pocketpipo.pocketpipo.dto.ApiErrorDTO;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicatedEmailException.class)
-    public ResponseEntity<ApiErrorDTO> handleNotFound(
+    public ResponseEntity<ApiErrorDTO> handleDuplicatedEmail(
             DuplicatedEmailException ex,
             HttpServletRequest req
     ) {
@@ -29,20 +27,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleAuth(AuthenticationException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                Map.of(
-                        "timestamp", LocalDateTime.now().toString(),
-                        "status", 401,
-                        "error", "Unauthorized",
-                        "message", ex.getClass().getSimpleName() + ": " + ex.getMessage()
-                )
-        );
-    }
+    @ExceptionHandler(AuthenticationException.class)
+public ResponseEntity<ApiErrorDTO> handleAuth(
+        AuthenticationException ex,
+        HttpServletRequest req
+) {
+    ApiErrorDTO body = new ApiErrorDTO(
+            ex.getMessage(),
+            HttpStatus.UNAUTHORIZED.value(),
+            req.getRequestURI(),
+            Instant.now()
+    );
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+}
 
     @ExceptionHandler(ExpenseNotFoundException.class)
-public ResponseEntity<ApiErrorDTO> handleNotFound(
+public ResponseEntity<ApiErrorDTO> handleExpenseNotFound(
         ExpenseNotFoundException ex,
         HttpServletRequest req
 ) {
@@ -56,7 +56,7 @@ public ResponseEntity<ApiErrorDTO> handleNotFound(
 }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiErrorDTO> handleNotFound(
+    public ResponseEntity<ApiErrorDTO> handleUserNotFound(
             UserNotFoundException ex,
             HttpServletRequest req
     ) {
