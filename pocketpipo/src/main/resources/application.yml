@@ -1,6 +1,14 @@
 server:
   port: 8080
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: pocketpipo-notifications
+      auto-offset-reset: earliest
+    producer:
+      properties:
+        spring.json.add.type.headers: false
   datasource:
     url: jdbc:postgresql://localhost:5432/pocketpipo_db
     username: pipo_user
@@ -17,8 +25,8 @@ spring:
       include-message: always,
 
 logging:
-  level:
-    org.hibernate.SQL: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{correlationId}] %logger{36} - %msg%n"
 
 app:
   jwt:
