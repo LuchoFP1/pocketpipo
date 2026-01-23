@@ -11,5 +11,28 @@ services:
     volumes:
       - pocketpipo_pgdata:/var/lib/postgresql/data
 
+  kafka:
+    image: apache/kafka-native
+    container_name: pocketpipo_kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Listeners para host (tu app en Windows) y para otros containers
+      KAFKA_LISTENERS: "CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "HOST://localhost:9092,DOCKER://kafka:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT"
+
+      # KRaft (sin ZooKeeper)
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9091"
+
+      # Inter-broker
+      KAFKA_INTER_BROKER_LISTENER_NAME: "DOCKER"
+
+      # Single-node
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+
 volumes:
   pocketpipo_pgdata:

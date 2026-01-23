@@ -1,5 +1,6 @@
 package com.pocketpipo.pocketpipo.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import com.pocketpipo.pocketpipo.entity.IdempotencyKey;
 import com.pocketpipo.pocketpipo.entity.User;
 import com.pocketpipo.pocketpipo.exception.ExpenseNotFoundException;
 import com.pocketpipo.pocketpipo.exception.InvalidDateException;
+import com.pocketpipo.pocketpipo.kafka.ExpenseEventProducer;
 import com.pocketpipo.pocketpipo.repository.ExpenseRepository;
 import com.pocketpipo.pocketpipo.repository.IdempotencyKeyRepository;
 
@@ -23,15 +25,19 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final IdempotencyKeyRepository idempotencyKeyRepository;
     private final UserService userService;
+    private BigDecimal threshold = BigDecimal.valueOf(2000);
+    private final ExpenseEventProducer expenseEventProducer;
 
     public ExpenseService(
             ExpenseRepository expenseRepository,
             IdempotencyKeyRepository idempotencyKeyRepository,
-            UserService userService
+            UserService userService,
+            ExpenseEventProducer expenseEventProducer
     ) {
         this.expenseRepository = expenseRepository;
         this.idempotencyKeyRepository = idempotencyKeyRepository;
         this.userService = userService;
+        this.expenseEventProducer = expenseEventProducer;
     }
 
 
@@ -70,6 +76,14 @@ public class ExpenseService {
         idem.setStatus(IdempotencyKey.Status.COMPLETED);
         idem.setResource(expense);
         idempotencyKeyRepository.save(idem);
+        if (expense.getAmount().compareTo(threshold) > 0) {
+            expenseEventProducer.publishExpenseThresholdExceeded(
+                user.getId(),
+                expense.getId(),
+                expense.getAmount(),
+                threshold
+        );
+}
     }
 
 
