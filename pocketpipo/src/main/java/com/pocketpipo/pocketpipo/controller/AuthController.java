@@ -1,31 +1,26 @@
 package com.pocketpipo.pocketpipo.controller;
 
-import com.pocketpipo.pocketpipo.dto.CreateUserRequestDTO;
 import com.pocketpipo.pocketpipo.dto.LoginRequestDTO;
 import com.pocketpipo.pocketpipo.dto.LoginResponseDTO;
 import com.pocketpipo.pocketpipo.security.JwtService;
-import com.pocketpipo.pocketpipo.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+          
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
 
-    public AuthController(UserService userService, AuthenticationManager authManager, JwtService jwtService) {
-        this.userService = userService;
+    public AuthController(AuthenticationManager authManager, JwtService jwtService) {
         this.authManager = authManager;
         this.jwtService = jwtService;
-    }
-
-    @PostMapping("/register")
-    public void register(@RequestBody CreateUserRequestDTO dto) {
-        userService.createUser(dto);
     }
 
     @PostMapping("/login")
