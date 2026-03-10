@@ -18,6 +18,7 @@ import com.pocketpipo.pocketpipo.dto.ExpenseThresholdExceededEventDTO;
 public class KafkaProducerConfig {
 
     @Bean
+    @SuppressWarnings("deprecation")
     public ProducerFactory<String, ExpenseThresholdExceededEventDTO> producerFactory() {
 
         Map<String, Object> config = new HashMap<>();
