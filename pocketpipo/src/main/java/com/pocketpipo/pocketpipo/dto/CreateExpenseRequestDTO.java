@@ -11,8 +11,7 @@ public class CreateExpenseRequestDTO {
     private BigDecimal amount;
     @NotNull
     private LocalDate date;
-    @NotNull
-    private Long userId;
+
     public String getDescription() {
         return description;
     }
@@ -30,12 +29,6 @@ public class CreateExpenseRequestDTO {
     }
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-    public Long getUserId() {
-        return userId;
-    }
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     
