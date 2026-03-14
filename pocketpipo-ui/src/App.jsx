@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BrowserRouter,
   Link,
@@ -204,11 +204,141 @@ function CreateUser() {
 }
 
 function Expenses() {
-  return <h1>Expenses</h1>
+  const [expenses, setExpenses] = useState([])
+  const [error, setError] = useState('')
+
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth() + 1
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const token = localStorage.getItem('token')
+
+        const response = await fetch(
+          `http://localhost:8080/expense/expenses?year=${year}&month=${month}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch expenses')
+        }
+
+        const data = await response.json()
+        setExpenses(data)
+      } catch (err) {
+        setError(err.message)
+      }
+    }
+
+    fetchExpenses()
+  }, [])
+
+  return (
+    <div>
+      <h1>Monthly Expenses</h1>
+
+      {error && <p>{error}</p>}
+
+      <ul>
+        {expenses.map((expense) => (
+          <li key={expense.id}>
+            {expense.date} — {expense.description} — {expense.amount}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 function AddExpense() {
-  return <h1>Add Expense</h1>
+  const navigate = useNavigate()
+  const [description, setDescription] = useState('')
+  const [amount, setAmount] = useState('')
+  const [date, setDate] = useState('')
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setError('')
+
+    try {
+      const token = localStorage.getItem('token')
+      const idempotencyKey = crypto.randomUUID()
+
+      const response = await fetch('http://localhost:8080/expense/expenses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Idempotency-Key': idempotencyKey,
+        },
+        body: JSON.stringify({
+          description,
+          amount,
+          date,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Expense creation failed')
+      }
+
+      navigate('/expenses')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  return (
+    <div>
+      <h1>Add Expense</h1>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="expense-description">Description</label>
+          <input
+            id="expense-description"
+            type="text"
+            name="description"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="expense-amount">Amount</label>
+          <input
+            id="expense-amount"
+            type="number"
+            name="amount"
+            step="0.01"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="expense-date">Date</label>
+          <input
+            id="expense-date"
+            type="date"
+            name="date"
+            value={date}
+            onChange={(event) => setDate(event.target.value)}
+          />
+        </div>
+
+        {error && <p>{error}</p>}
+
+        <button type="submit">Create Expense</button>
+      </form>
+    </div>
+  )
 }
 
 function App() {
