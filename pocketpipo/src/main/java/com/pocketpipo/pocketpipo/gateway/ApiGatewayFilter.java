@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.MDC;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,25 +42,26 @@ public class ApiGatewayFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 1) Correlation-Id (header in/out)
         String correlationId = request.getHeader(CORRELATION_ID_HEADER);
         if (correlationId == null || correlationId.isBlank()) {
             correlationId = UUID.randomUUID().toString();
         }
         response.setHeader(CORRELATION_ID_HEADER, correlationId);
 
-        // 2) Put into MDC so every log in this request can print it
         MDC.put(MDC_CORRELATION_ID_KEY, correlationId);
         try {
             String path = request.getRequestURI();
 
-            // 3) Bypass auth endpoints
+            if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             if (path.startsWith("/auth")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // 4) Read + validate Authorization header
             String authHeader = request.getHeader(AUTHORIZATION);
             if (authHeader == null || authHeader.isBlank()) {
                 writeUnauthorized(response, path, "Missing Authorization header");
@@ -77,7 +79,6 @@ public class ApiGatewayFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 5) Validate token + set SecurityContext
             try {
                 String email = jwtService.extractSubject(token);
                 if (email == null || email.isBlank()) {
@@ -104,7 +105,6 @@ public class ApiGatewayFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
 
-                // 6) Continue the chain only when everything is OK
                 filterChain.doFilter(request, response);
 
             } catch (Exception ex) {
