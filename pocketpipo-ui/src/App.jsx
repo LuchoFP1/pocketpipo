@@ -236,7 +236,20 @@ function Expenses() {
     }
 
     fetchExpenses()
-  }, [])
+  }, [month, year])
+
+  const groupedExpenses = expenses.reduce((accumulator, expense) => {
+    const dateKey = expense.date
+
+    if (!accumulator[dateKey]) {
+      accumulator[dateKey] = []
+    }
+
+    accumulator[dateKey].push(expense)
+    return accumulator
+  }, {})
+
+  const sortedDates = Object.keys(groupedExpenses).sort((a, b) => b.localeCompare(a))
 
   return (
     <div>
@@ -244,13 +257,20 @@ function Expenses() {
 
       {error && <p>{error}</p>}
 
-      <ul>
-        {expenses.map((expense) => (
-          <li key={expense.id}>
-            {expense.date} — {expense.description} — {expense.amount}
-          </li>
-        ))}
-      </ul>
+      {sortedDates.length === 0 && !error && <p>No expenses found for this month.</p>}
+
+      {sortedDates.map((date) => (
+        <div key={date}>
+          <h2>{date}</h2>
+          <ul>
+            {groupedExpenses[date].map((expense) => (
+              <li key={expense.id}>
+                {expense.description} — {expense.amount}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   )
 }
