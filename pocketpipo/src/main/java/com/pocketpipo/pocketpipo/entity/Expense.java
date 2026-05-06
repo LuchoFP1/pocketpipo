@@ -22,6 +22,10 @@ public class Expense {
     @Column(nullable = false)
     private LocalDate date;
 
+    @ManyToOne
+@JoinColumn(name = "budget_id")
+    private Budget budget;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
@@ -92,8 +96,12 @@ public class Expense {
         this.deleted = deleted;
     }
 
- 
+    public Budget getBudget() {
+        return budget;
+      }
 
-    // getters / setters
+    public void setBudget(Budget budget) {
+        this.budget = budget;
+    }
     
 }
