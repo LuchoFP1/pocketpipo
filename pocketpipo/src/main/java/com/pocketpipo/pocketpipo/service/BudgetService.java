@@ -24,4 +24,19 @@ public class BudgetService {
         Budget budget = new Budget(budgetRequestDTO.getName(), user, budgetRequestDTO.getMaxAmount(), budgetRequestDTO.getStartDate(), budgetRequestDTO.getEndDate());
         return budgetRepository.save(budget);
     }
+
+    public void updateBudget(CreateBudgetRequestDTO budgetRequestDTO) {
+        Budget budget = this.getBudgetById(budgetRequestDTO.getId());
+        budget.setUpdatedAt(LocalDate.now());
+        budget.setEndDate(budgetRequestDTO.getEndDate());
+        budget.setStartDate(budgetRequestDTO.getStartDate());
+        budget.setMaxAmount(budgetRequestDTO.getMaxAmount());
+        budget.setName(budgetRequestDTO.getName());
+        budgetRepository.save(budget);
+    }
+
+    public Budget getBudgetById(long budgetId) {
+        User user = userService.getCurrentLoggedUser();
+        return this.budgetRepository.findByIdAndUserId(budgetId, user.getId());
+    }
 }

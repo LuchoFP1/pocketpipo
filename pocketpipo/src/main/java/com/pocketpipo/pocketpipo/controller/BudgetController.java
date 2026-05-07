@@ -1,6 +1,7 @@
 package com.pocketpipo.pocketpipo.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,10 @@ public class BudgetController {
     @PostMapping
     public ResponseEntity<Budget> createBudget(@RequestBody CreateBudgetRequestDTO budget) {
         return ResponseEntity.ok(budgetService.createBudget(budget));
+    }
+
+    @PatchMapping  
+    public void updateEntity(@RequestBody CreateBudgetRequestDTO budget) {
+        this.budgetService.updateBudget(budget);
     }
 }
