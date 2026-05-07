@@ -39,11 +39,14 @@ public class Budget {
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDate updatedAt;
 
     @Column(name = "deleted_at")
     private LocalDate deletedAt;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     public Budget() {
     }
@@ -58,6 +61,7 @@ public class Budget {
         this.updatedAt = null;
         this.deletedAt = null; 
         this.name = name;
+        this.deleted = false;
     }
 
     public long getId() {
@@ -128,5 +132,13 @@ public class Budget {
     }
     public String getName() {
         return name;
+    }
+
+    public boolean getDeleted() {
+        return this.deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

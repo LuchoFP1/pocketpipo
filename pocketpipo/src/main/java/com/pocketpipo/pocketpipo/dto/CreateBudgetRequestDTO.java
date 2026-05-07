@@ -3,7 +3,6 @@ package com.pocketpipo.pocketpipo.dto;
 import java.time.LocalDate;
 
 public class CreateBudgetRequestDTO {
-    private long id;
     private String name;
     private long maxAmount;
     private long userId;
@@ -48,13 +47,5 @@ public class CreateBudgetRequestDTO {
     }
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }

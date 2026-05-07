@@ -25,8 +25,8 @@ public class BudgetService {
         return budgetRepository.save(budget);
     }
 
-    public void updateBudget(CreateBudgetRequestDTO budgetRequestDTO) {
-        Budget budget = this.getBudgetById(budgetRequestDTO.getId());
+    public void updateBudget(CreateBudgetRequestDTO budgetRequestDTO, long id) {
+        Budget budget = this.getBudgetById(id);
         budget.setUpdatedAt(LocalDate.now());
         budget.setEndDate(budgetRequestDTO.getEndDate());
         budget.setStartDate(budgetRequestDTO.getStartDate());
@@ -38,5 +38,11 @@ public class BudgetService {
     public Budget getBudgetById(long budgetId) {
         User user = userService.getCurrentLoggedUser();
         return this.budgetRepository.findByIdAndUserId(budgetId, user.getId());
+    }
+
+    public void deleteBudget(long budgetId) {
+        Budget budget = this.getBudgetById(budgetId);
+        budget.setDeleted(true);
+        this.budgetRepository.save(budget);
     }
 }
