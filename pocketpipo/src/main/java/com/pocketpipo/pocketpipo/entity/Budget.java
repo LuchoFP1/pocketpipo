@@ -19,6 +19,9 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -45,15 +48,16 @@ public class Budget {
     public Budget() {
     }
 
-    public Budget(long id, User user, long maxAmount, LocalDate startDate, LocalDate endDate, LocalDate createdAt, LocalDate updatedAt, LocalDate deletedAt) {
-        this.id = id;
+    public Budget(String name, User user, long maxAmount, 
+        LocalDate startDate, LocalDate endDate) {
         this.user = user;
         this.maxAmount = maxAmount;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
+        this.createdAt = LocalDate.now();
+        this.updatedAt = null;
+        this.deletedAt = null; 
+        this.name = name;
     }
 
     public long getId() {
@@ -118,5 +122,11 @@ public class Budget {
     
     public void setDeletedAt(LocalDate deletedAt) {
         this.deletedAt = deletedAt;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
     }
 }
