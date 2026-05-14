@@ -32,7 +32,7 @@ public class BudgetService {
         Budget savedBudget = budgetRepository.save(budget);
 
         List<Expense> expenses = expenseRepository
-        .findByUserIdAndDateBetweenAndDeletedFalse(
+        .findByUserIdAndDateBetweenAndDeletedFalseAndBudgetIsNull(
             user.getId(),
             savedBudget.getStartDate(),
             savedBudget.getEndDate()

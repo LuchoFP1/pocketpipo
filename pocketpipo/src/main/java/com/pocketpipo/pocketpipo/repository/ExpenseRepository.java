@@ -12,5 +12,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     public List<Expense> findAllByUserIdAndDeletedFalseAndDateGreaterThanEqualAndDateLessThan(Long userId, LocalDate startDate, LocalDate endDate);
 
-    public List<Expense> findByUserIdAndDateBetweenAndDeletedFalse(long userId, LocalDate startDate, LocalDate endDate);
+    public List<Expense> findByUserIdAndDateBetweenAndDeletedFalseAndBudgetIsNull(long userId, LocalDate startDate, LocalDate endDate);
 }
