@@ -1,7 +1,10 @@
 package com.pocketpipo.pocketpipo.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,5 +40,15 @@ public class BudgetController {
     public ResponseEntity<String> deleteBudgetById(@PathVariable long budgetId) {
         this.budgetService.deleteBudget(budgetId);
         return ResponseEntity.ok("The budget was succesfully deleted.");
+    }
+
+    @GetMapping("/{budgetId}")
+    public ResponseEntity<Budget> getBudgetById(@PathVariable long budgetId) {
+        return ResponseEntity.ok(budgetService.getBudgetById(budgetId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Budget>> getBudgets() {
+        return ResponseEntity.ok(budgetService.getBudgets());
     }
 }

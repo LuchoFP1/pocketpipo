@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pocketpipo.pocketpipo.dto.CreateBudgetRequestDTO;
 import com.pocketpipo.pocketpipo.entity.Budget;
@@ -26,6 +27,12 @@ public class BudgetService {
         this.expenseRepository = expenseRepository;
     }
 
+    public List<Budget> getBudgets() {
+        User user = userService.getCurrentLoggedUser();
+        return budgetRepository.findByUserIdAndDeletedFalse(user.getId());
+    }
+
+    @Transactional
     public Budget createBudget(CreateBudgetRequestDTO budgetRequestDTO) {
         User user = userService.getCurrentLoggedUser();
         Budget budget = new Budget(budgetRequestDTO.getName(), user, budgetRequestDTO.getMaxAmount(), budgetRequestDTO.getStartDate(), budgetRequestDTO.getEndDate());
@@ -59,7 +66,7 @@ public class BudgetService {
 
     public Budget getBudgetById(long budgetId) {
         User user = userService.getCurrentLoggedUser();
-        return this.budgetRepository.findByIdAndUserId(budgetId, user.getId());
+        return this.budgetRepository.findByIdAndUserIdAndDeletedFalse(budgetId, user.getId());
     }
 
     public void deleteBudget(long budgetId) {
