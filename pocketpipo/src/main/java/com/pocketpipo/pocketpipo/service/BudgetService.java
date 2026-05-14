@@ -74,4 +74,9 @@ public class BudgetService {
         budget.setDeleted(true);
         this.budgetRepository.save(budget);
     }
+
+    public Budget findActiveBudgetForExpense(LocalDate date) {
+        User user = userService.getCurrentLoggedUser();
+        return this.budgetRepository.findByUserIdAndDeletedFalseAndStartDateLessThanEqualAndEndDateGreaterThanEqual(user.getId(), date, date);
+    }
 }

@@ -1,5 +1,6 @@
 package com.pocketpipo.pocketpipo.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
@@ -27,7 +28,7 @@ public class Budget {
     private User user;
 
     @Column(name = "max_amount", nullable = false)
-    private long maxAmount;
+    private BigDecimal maxAmount;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -51,7 +52,7 @@ public class Budget {
     public Budget() {
     }
 
-    public Budget(String name, User user, long maxAmount, 
+    public Budget(String name, User user, BigDecimal maxAmount, 
         LocalDate startDate, LocalDate endDate) {
         this.user = user;
         this.maxAmount = maxAmount;
@@ -72,7 +73,7 @@ public class Budget {
         return user;
     }
 
-    public long getMaxAmount() {
+    public BigDecimal getMaxAmount() {
         return maxAmount;
     }
 
@@ -104,7 +105,7 @@ public class Budget {
         this.user = user;
     }
 
-    public void setMaxAmount(long maxAmount) {
+    public void setMaxAmount(BigDecimal maxAmount) {
         this.maxAmount = maxAmount;
     }
 

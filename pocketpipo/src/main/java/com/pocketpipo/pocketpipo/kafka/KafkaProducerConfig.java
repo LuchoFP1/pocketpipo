@@ -12,26 +12,35 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.pocketpipo.pocketpipo.dto.ExpenseThresholdExceededEventDTO;
+import com.pocketpipo.pocketpipo.event.BudgetThresholdExceededEvent;
 
 @Configuration
 public class KafkaProducerConfig {
 
     @Bean
-    @SuppressWarnings("deprecation")
-    public ProducerFactory<String, ExpenseThresholdExceededEventDTO> producerFactory() {
+    public ProducerFactory<String, BudgetThresholdExceededEvent> budgetThresholdProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
 
-        Map<String, Object> config = new HashMap<>();
+        configProps.put(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+            "localhost:9092"
+        );
 
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+            StringSerializer.class
+        );
 
-        return new DefaultKafkaProducerFactory<>(config);
+        configProps.put(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+            JsonSerializer.class
+        );
+
+        return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, ExpenseThresholdExceededEventDTO> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, BudgetThresholdExceededEvent> budgetThresholdKafkaTemplate() {
+        return new KafkaTemplate<>(budgetThresholdProducerFactory());
     }
 }

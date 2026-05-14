@@ -8,11 +8,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicsConfig {
 
-    public static final String EXPENSE_THRESHOLD_EXCEEDED_TOPIC = "expense-threshold-exceeded";
+    public static final String BUDGET_THRESHOLD_EXCEEDED_TOPIC = "budget-threshold-exceeded";
 
     @Bean
-    public NewTopic expenseThresholdExceededTopic() {
-        return TopicBuilder.name(EXPENSE_THRESHOLD_EXCEEDED_TOPIC)
+    public NewTopic budgetThresholdExceededTopic() {
+        return TopicBuilder.name(BUDGET_THRESHOLD_EXCEEDED_TOPIC)
                 .partitions(1)
                 .replicas(1)
                 .build();
